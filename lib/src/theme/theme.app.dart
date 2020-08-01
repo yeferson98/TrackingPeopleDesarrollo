@@ -5,15 +5,31 @@ import 'package:segcov/src/config/app_config.dart' as config;
 class ThemeAplication with ChangeNotifier {
   SharedPreferences _preferenceTheme;
   ThemeData _currentTheme = ThemeData();
+  bool themecheck;
   ThemeData get currentTheme => this._currentTheme;
+  bool get currentValueTheme => this.themecheck;
   ThemeAplication() {
     verifytheme();
   }
+  void addThemeHomen() async {
+    _preferenceTheme = await SharedPreferences.getInstance();
+    _preferenceTheme.setBool('themeApp', true);
+    verifytheme();
+  }
+
+  void removeThemeHomen() async {
+    _preferenceTheme = await SharedPreferences.getInstance();
+    _preferenceTheme.remove('themeApp');
+    verifytheme();
+  }
+
   void verifytheme() async {
     _preferenceTheme = await SharedPreferences.getInstance();
     if (_preferenceTheme.containsKey('themeApp')) {
+      themecheck = true;
       valueTheme(2);
     } else {
+      themecheck = false;
       valueTheme(1);
     }
   }
@@ -25,11 +41,11 @@ class ThemeAplication with ChangeNotifier {
         notifyListeners();
         break;
       case 2:
-        _currentTheme = darkTheme;
+        _currentTheme = homenTheme;
         notifyListeners();
         break;
       default:
-        _currentTheme = darkTheme;
+        _currentTheme = homenTheme;
         notifyListeners();
     }
   }
@@ -80,50 +96,49 @@ class ThemeAplication with ChangeNotifier {
     ),
   );
 
-  final darkTheme = ThemeData(
+  final homenTheme = ThemeData(
     fontFamily: 'NotoSansTc',
-    primaryColor: Color(0xFF252525),
-    brightness: Brightness.dark,
-    scaffoldBackgroundColor: Color(0xFF2C2C2C),
-    accentColor: config.Colors().mainDarkColor(1),
-    hintColor: config.Colors().secondDarkColor(1),
-    focusColor: config.Colors().accentDarkColor(1),
+    primaryColor: Colors.white,
+    brightness: Brightness.light,
+    accentColor: config.ColorsHomen().mainColor(1),
+    focusColor: config.ColorsHomen().accentColor(1),
+    hintColor: config.ColorsHomen().secondColor(1),
     textTheme: TextTheme(
-      button: TextStyle(color: Color(0xFF252525)),
+      button: TextStyle(color: Colors.white),
       headline1:
-          TextStyle(fontSize: 20.0, color: config.Colors().secondDarkColor(1)),
+          TextStyle(fontSize: 20.0, color: config.ColorsHomen().secondColor(1)),
       headline2: TextStyle(
           fontSize: 18.0,
           fontWeight: FontWeight.w600,
-          color: config.Colors().secondDarkColor(1)),
+          color: config.ColorsHomen().secondColor(1)),
       headline3: TextStyle(
           fontSize: 20.0,
           fontWeight: FontWeight.w600,
-          color: config.Colors().secondDarkColor(1)),
+          color: config.ColorsHomen().secondColor(1)),
       headline4: TextStyle(
           fontSize: 22.0,
           fontWeight: FontWeight.w700,
-          color: config.Colors().mainDarkColor(1)),
+          color: config.ColorsHomen().mainColor(1)),
       headline5: TextStyle(
           fontSize: 22.0,
           fontWeight: FontWeight.w300,
-          color: config.Colors().secondDarkColor(1)),
+          color: config.ColorsHomen().secondColor(1)),
       subtitle1: TextStyle(
           fontSize: 15.0,
           fontWeight: FontWeight.w500,
-          color: config.Colors().secondDarkColor(1)),
+          color: config.ColorsHomen().secondColor(1)),
       headline6: TextStyle(
           fontSize: 16.0,
           fontWeight: FontWeight.w600,
-          color: config.Colors().mainDarkColor(1)),
+          color: config.ColorsHomen().mainColor(1)),
       bodyText1:
-          TextStyle(fontSize: 12.0, color: config.Colors().secondDarkColor(1)),
+          TextStyle(fontSize: 12.0, color: config.ColorsHomen().secondColor(1)),
       bodyText2: TextStyle(
           fontSize: 14.0,
           fontWeight: FontWeight.w600,
-          color: config.Colors().secondDarkColor(1)),
+          color: config.ColorsHomen().secondColor(1)),
       caption: TextStyle(
-          fontSize: 12.0, color: config.Colors().secondDarkColor(0.7)),
+          fontSize: 12.0, color: config.ColorsHomen().secondColor(0.6)),
     ),
   );
 }

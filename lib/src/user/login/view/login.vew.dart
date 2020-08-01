@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:segcov/src/bloc/tracking.people.bloc.dart';
+import 'package:segcov/src/config/notify.widget.dart';
 import 'package:segcov/src/user/login/body/components/backgorund.dart';
 import 'package:segcov/src/user/login/body/components/textField_container.dart';
 import 'package:segcov/src/user/pages/view/dashboard.view.dart';
+import 'package:segcov/src/user/pages/view/pages/page.body.qr.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginView extends StatefulWidget {
@@ -17,6 +20,8 @@ class _LoginViewState extends State<LoginView> {
   TrackingPeopleBloc trackingPeopleApp;
   String user = "";
   String password = "";
+  String messageProgressRegUser = "";
+  bool messagecarga = false;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -34,14 +39,21 @@ class _LoginViewState extends State<LoginView> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
-                      height: size.height * .4,
+                      height: size.height * .3,
                     ),
-                    Text(
-                      'Ingrese sus credenciales',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 19,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          width: 120,
+                          height: 120,
+                          child: CircleAvatar(
+                            backgroundImage:
+                                AssetImage('assets/logoFondo.jpeg'),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: 20,
@@ -68,7 +80,7 @@ class _LoginViewState extends State<LoginView> {
                     TextFieldContainer(
                       child: TextFormField(
                         controller: _passwordController,
-                        keyboardType: TextInputType.visiblePassword,
+                        obscureText: true,
                         onSaved: (value) => password = value,
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -82,7 +94,16 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ),
                     SizedBox(
-                      height: 30,
+                      height: 6,
+                    ),
+                    Text(
+                      messageProgressRegUser,
+                      style: Theme.of(context).textTheme.headline4.merge(
+                            TextStyle(color: Colors.redAccent, fontSize: 14),
+                          ),
+                    ),
+                    SizedBox(
+                      height: 20,
                     ),
                     InkWell(
                       child: Container(
@@ -147,10 +168,18 @@ class _LoginViewState extends State<LoginView> {
       trackingPeopleApp.loginUserBloc(credential[0], credential[1]).then(
         (response) async {
           if (response.status == null) {
+            setState(() {
+              messageProgressRegUser = '';
+            });
             SharedPreferences _preferences =
                 await SharedPreferences.getInstance();
             _preferences.setBool('isLoggedInUser', true);
             _preferences.setStringList('credentialUser', credential);
+            final layoutModel =
+                Provider.of<LayoutModel>(context, listen: false);
+            layoutModel.currentPage = PageBodyQR(
+              user: response,
+            );
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (BuildContext context) => BlocProvider(
@@ -160,9 +189,13 @@ class _LoginViewState extends State<LoginView> {
               ),
             );
           } else if (response.status == 404) {
-            print('usuario no registrado');
+            setState(() {
+              messageProgressRegUser = 'Este usuario no existe';
+            });
           } else {
-            print('ocurrio un error inesperado');
+            setState(() {
+              messageProgressRegUser = 'ocurrio un error inesperado';
+            });
           }
         },
       );

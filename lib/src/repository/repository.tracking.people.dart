@@ -6,4 +6,6 @@ class RepositoryTrakingPeople {
 
   Future<User> loginUserRepository(String user, String password) =>
       trackingPeopleApi.loginUser(user, password);
+  Future<int> saveAreaRepository(String fecha, token, codArea) =>
+      trackingPeopleApi.saveArea(fecha, token, codArea);
 }

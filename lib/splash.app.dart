@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:provider/provider.dart';
 import 'dart:async';
 
 import 'package:segcov/src/bloc/tracking.people.bloc.dart';
+import 'package:segcov/src/config/notify.widget.dart';
 import 'package:segcov/src/user/login/view/login.vew.dart';
+import 'package:segcov/src/user/pages/view/pages/page.body.qr.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'src/user/pages/view/dashboard.view.dart';
@@ -46,10 +49,10 @@ class _SplashTrackingPeopleState extends State<SplashTrackingPeople> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              width: 200,
-              height: 100,
+              width: 150,
+              height: 150,
               child: Image(
-                image: AssetImage('assets/gifconnection.gif'),
+                image: AssetImage('assets/logo.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -61,7 +64,7 @@ class _SplashTrackingPeopleState extends State<SplashTrackingPeople> {
               style: Theme.of(context)
                   .textTheme
                   .headline6
-                  .merge(TextStyle(color: Colors.orangeAccent)),
+                  .merge(TextStyle(color: Theme.of(context).accentColor)),
             ),
           ],
         ),
@@ -72,7 +75,7 @@ class _SplashTrackingPeopleState extends State<SplashTrackingPeople> {
   void _homeAtuhUserKushi(bool status) async {
     try {
       setState(() {
-        messageStatus = "Iniciando Tracking People...";
+        messageStatus = "";
       });
       if (status) {
         SharedPreferences _preferences = await SharedPreferences.getInstance();
@@ -80,6 +83,11 @@ class _SplashTrackingPeopleState extends State<SplashTrackingPeople> {
         trackingPeopleApp.loginUserBloc(objetUser[0], objetUser[1]).then(
           (response) async {
             if (response.status == null) {
+              final layoutModel =
+                  Provider.of<LayoutModel>(context, listen: false);
+              layoutModel.currentPage = PageBodyQR(
+                user: response,
+              );
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (BuildContext context) => BlocProvider(

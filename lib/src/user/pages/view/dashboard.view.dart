@@ -26,7 +26,7 @@ class _DashboardViewState extends State<DashboardView> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).accentColor,
           title: Text(
-            'Scanner Qr ',
+            'SEGPRE QR',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline1.merge(
                   TextStyle(
@@ -46,7 +46,8 @@ class _DashboardViewState extends State<DashboardView> {
                     //Navigator.of(context).pushNamed('/Tabs', arguments: 1);
                   },
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(widget.user.people.urlImage),
+                    backgroundImage:
+                        NetworkImage(widget.user.people[0].urlImage),
                   ),
                 )),
           ],

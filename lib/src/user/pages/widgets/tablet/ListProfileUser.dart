@@ -1,9 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:segcov/src/config/notify.widget.dart';
+import 'package:segcov/src/models/people.model.dart';
 import 'package:segcov/src/models/user.model.dart';
 import 'package:segcov/src/user/pages/view/pages/page.body.profile.dart';
 import 'package:segcov/src/user/pages/view/pages/page.body.qr.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListProfileUser extends StatelessWidget {
   ListProfileUser({@required this.user});
@@ -22,7 +26,7 @@ class ListProfileUser extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                user.people.name,
+                user.people[0].name,
                 style: Theme.of(context).textTheme.headline1.merge(
                       TextStyle(
                           fontSize: 21, color: Theme.of(context).primaryColor),
@@ -71,7 +75,9 @@ class ListProfileUser extends StatelessWidget {
                         onTap: () {
                           final layoutModel =
                               Provider.of<LayoutModel>(context, listen: false);
-                          layoutModel.currentPage = ProfileUser();
+                          layoutModel.currentPage = ProfileUser(
+                            people: user.people[0],
+                          );
                         },
                         leading: Icon(
                           Icons.people,
@@ -93,7 +99,7 @@ class ListProfileUser extends StatelessWidget {
                           color: Theme.of(context).focusColor.withOpacity(0.3),
                         ),
                       ),
-                      ListTile(
+                      /*ListTile(
                         onTap: () {
                           //Navigator.of(context).pushNamed('/Tabs', arguments: 0);
                         },
@@ -105,10 +111,10 @@ class ListProfileUser extends StatelessWidget {
                           "Ayuda",
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
-                      ),
+                      ),*/
                       ListTile(
                         onTap: () {
-                          //Navigator.of(context).pushNamed('/Login');
+                          alertInfo(user.people[0], context);
                         },
                         leading: Icon(
                           Icons.exit_to_app,
@@ -122,7 +128,7 @@ class ListProfileUser extends StatelessWidget {
                       ListTile(
                         dense: true,
                         title: Text(
-                          "Versión 0.0.1",
+                          "Versión 1.0.0",
                           style: Theme.of(context).textTheme.bodyText1,
                         ),
                         trailing: Icon(
@@ -138,6 +144,53 @@ class ListProfileUser extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void alertInfo(PeopleModel peopleModel, BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (buildcontext) {
+        return CupertinoAlertDialog(
+          title: Text(
+            peopleModel.name.toUpperCase(),
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              '¿Seguro que desea cerrar sesión?',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline2
+                  .merge(TextStyle(fontSize: 14)),
+            ),
+          ),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text(
+                'SI',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+              onPressed: () async {
+                SharedPreferences _preferences =
+                    await SharedPreferences.getInstance();
+                _preferences.remove('isLoggedInUser');
+                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+              },
+            ),
+            CupertinoDialogAction(
+              child: Text(
+                'NO',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

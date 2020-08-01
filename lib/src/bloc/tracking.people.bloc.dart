@@ -6,6 +6,8 @@ class TrackingPeopleBloc implements Bloc {
   final _getRepositoryApp = RepositoryTrakingPeople();
   Future<User> loginUserBloc(String user, String password) =>
       _getRepositoryApp.loginUserRepository(user, password);
+  Future<int> saveAreaRepository(String fecha, token, codArea) =>
+      _getRepositoryApp.saveAreaRepository(fecha, token, codArea);
   @override
   void dispose() {}
 }

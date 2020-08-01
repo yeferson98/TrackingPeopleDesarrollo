@@ -67,3 +67,36 @@ class Colors {
     return this._accentDarkColor.withOpacity(opacity);
   }
 }
+
+class ColorsHomen {
+  Color _mainColor = Color(0xFFF06292);
+  Color _mainDarkColor = Color(0xFFE91E63);
+  Color _secondColor = Color(0xFFF06292);
+  Color _secondDarkColor = Color(0xFFEDE7F6);
+  Color _accentColor = Color(0xFFF48FB1);
+  Color _accentDarkColor = Color(0xFFF48FB1);
+
+  Color mainColor(double opacity) {
+    return this._mainColor.withOpacity(opacity);
+  }
+
+  Color secondColor(double opacity) {
+    return this._secondColor.withOpacity(opacity);
+  }
+
+  Color accentColor(double opacity) {
+    return this._accentColor.withOpacity(opacity);
+  }
+
+  Color mainDarkColor(double opacity) {
+    return this._mainDarkColor.withOpacity(opacity);
+  }
+
+  Color secondDarkColor(double opacity) {
+    return this._secondDarkColor.withOpacity(opacity);
+  }
+
+  Color accentDarkColor(double opacity) {
+    return this._accentDarkColor.withOpacity(opacity);
+  }
+}

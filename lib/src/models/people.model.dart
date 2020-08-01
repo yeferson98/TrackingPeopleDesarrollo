@@ -10,14 +10,17 @@ class PeopleModel {
   String urlImage;
   String user;
   String date;
-  PeopleModel(
-      {this.idCliente,
-      this.name,
-      this.lastname,
-      this.email,
-      this.urlImage,
-      this.user,
-      this.date});
+  String cargo;
+  PeopleModel({
+    this.idCliente,
+    this.name,
+    this.lastname,
+    this.email,
+    this.urlImage,
+    this.user,
+    this.date,
+    this.cargo,
+  });
 
   factory PeopleModel.formJson(Map<String, dynamic> json) =>
       _$PeopleModelFromJson(json);

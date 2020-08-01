@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:segcov/src/user/pages/view/pages/page.body.qr.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LayoutModel with ChangeNotifier {
@@ -8,7 +7,6 @@ class LayoutModel with ChangeNotifier {
   bool _loggendIn = false;
   LayoutModel() {
     _verifyAuthUser();
-    _currentPage = PageBodyQR();
   }
   bool isLoggedIn() => _loggendIn;
   void _verifyAuthUser() async {
@@ -16,6 +14,8 @@ class LayoutModel with ChangeNotifier {
     if (_preferences.containsKey('isLoggedInUser')) {
       _loggendIn = true;
       notifyListeners();
+    } else {
+      _loggendIn = false;
     }
   }
 

@@ -1,12 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:segcov/src/config/nitify.menu.dart';
 import 'package:segcov/src/config/notify.widget.dart';
+import 'package:segcov/src/models/people.model.dart';
 import 'package:segcov/src/models/user.model.dart';
 import 'package:segcov/src/user/pages/colors/backgorund.dashboard.dart';
 import 'package:segcov/src/user/pages/view/pages/page.body.profile.dart';
 import 'package:segcov/src/user/pages/view/pages/page.body.qr.dart';
 import 'package:segcov/src/user/pages/widgets/phone/pinterest_menu.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PhoneView extends StatefulWidget {
   User user;
@@ -57,7 +61,7 @@ class _PhoneViewState extends State<PhoneView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        widget.user.people.name,
+                        widget.user.people[0].name,
                         style: Theme.of(context).textTheme.headline1.merge(
                               TextStyle(
                                   fontSize: 21,
@@ -72,7 +76,7 @@ class _PhoneViewState extends State<PhoneView> {
                             Padding(
                               padding: const EdgeInsets.all(3.0),
                               child: Text(
-                                'Cargo: Adminstradora',
+                                'Cargo: ${widget.user.people[0].cargo}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline1
@@ -135,17 +139,19 @@ class _PhoneViewState extends State<PhoneView> {
                                 final layoutModel = Provider.of<LayoutModel>(
                                     context,
                                     listen: false);
-                                layoutModel.currentPage = ProfileUser();
+                                layoutModel.currentPage = ProfileUser(
+                                  people: widget.user.people[0],
+                                );
                               }),
-                          PinterestButton(
+                          /*PinterestButton(
                               icon: Icons.help,
                               onPressed: () {
                                 print('Icon notifications');
-                              }),
+                              }),*/
                           PinterestButton(
                               icon: Icons.exit_to_app,
                               onPressed: () {
-                                print('Icon supervised_user_circle');
+                                alertInfo(widget.user.people[0]);
                               }),
                         ],
                       ),
@@ -158,6 +164,53 @@ class _PhoneViewState extends State<PhoneView> {
           ),
         )
       ],
+    );
+  }
+
+  void alertInfo(PeopleModel peopleModel) {
+    showDialog(
+      context: context,
+      builder: (buildcontext) {
+        return CupertinoAlertDialog(
+          title: Text(
+            peopleModel.name.toUpperCase(),
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              '¿Seguro que desea cerrar sesión?',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline2
+                  .merge(TextStyle(fontSize: 14)),
+            ),
+          ),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text(
+                'SI',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+              onPressed: () async {
+                SharedPreferences _preferences =
+                    await SharedPreferences.getInstance();
+                _preferences.remove('isLoggedInUser');
+                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+              },
+            ),
+            CupertinoDialogAction(
+              child: Text(
+                'NO',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

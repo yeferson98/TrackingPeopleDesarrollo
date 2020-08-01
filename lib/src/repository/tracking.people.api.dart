@@ -26,4 +26,29 @@ class TrackingPeopleAPI {
     final map = jsonDecode(responseBody) as Map<String, dynamic>;
     return User.fromJson(map);
   }
+
+  Future<int> saveArea(String fecha, token, codArea) async {
+    try {
+      Map<String, String> headers = {
+        "Authorization": "bearer" + token,
+      };
+      var map = Map<String, dynamic>();
+      map['fecha'] = fecha;
+      map['cod_area'] = codArea;
+      var response = await http.post(CONSTANTSROUTE.REGISTERAREA,
+          body: map, headers: headers);
+      if (response.statusCode == 200) {
+        return 200;
+      } else if (response.statusCode == 401) {
+        return 401;
+      } else if (response.statusCode == 500) {
+        return 500;
+      } else {
+        return 403;
+      }
+    } catch (e) {
+      print(e);
+      return 500;
+    }
+  }
 }
